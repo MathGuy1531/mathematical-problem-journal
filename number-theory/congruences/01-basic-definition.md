@@ -149,3 +149,208 @@ If the number has a fractional component, convert it to base $b$ separately:
 Reading from top to bottom gives:  
 $$\mathbf{0.625_{10} = 0.101_2}$$
 
+# Mental Divisibility Check for Extremely Large Numbers
+
+A generalized approach to check divisibility of arbitrarily large numbers using only mental arithmetic. Based on modular arithmetic, digit reduction, and Vedic mathematics.
+
+---
+
+## 🧠 Core Principle: Running Modulo with Chunking
+
+For **any divisor `n`**, you can determine divisibility without performing full division.
+
+### The Algorithm
+
+
+
+**If final remainder = 0 → divisible.**
+
+---
+
+## 📏 Step-by-Step Guide
+
+### Step 1: Choose Your Chunk Size
+
+Pick `k` (usually 1, 2, or 3) such that `10^k mod n` is easy to compute mentally.
+
+| Chunk Size | 10^k | Best When n... |
+|------------|------|----------------|
+| k = 1 | 10 | n ≤ 20 |
+| k = 2 | 100 | n < 100 |
+| k = 3 | 1000 | n divides 999, 1001, etc. |
+
+### Step 2: Precompute the Multiplier
+
+
+
+**Examples:**
+- For n = 7, k = 1: `multiplier = 10 mod 7 = 3`
+- For n = 17, k = 2: `multiplier = 100 mod 17 = 15`
+- For n = 19, k = 2: `multiplier = 100 mod 19 = 5`
+
+### Step 3: Process the Number
+
+Work left to right, maintaining a small running remainder (always < n).
+
+
+
+---
+
+## 🚀 Worked Examples
+
+### Example 1: Is 9876543210 divisible by 7?
+
+**Setup:** n = 7, k = 1, multiplier = 10 mod 7 = 3
+
+Number split into digits: `9, 8, 7, 6, 5, 4, 3, 2, 1, 0`
+
+
+
+**Final remainder = 2 → NOT divisible by 7.**
+
+---
+
+### Example 2: Is 12345678901234567890 divisible by 17?
+
+**Setup:** n = 17, k = 2, multiplier = 100 mod 17 = 15
+
+Number split into 2-digit chunks: `12 34 56 78 90 12 34 56 78 90`
+
+
+
+**Final remainder = 13 → NOT divisible by 17.**
+
+---
+
+## ⚡ Quick Divisibility Rules (Classical)
+
+| Divisor | Rule | Works for Any Size? |
+|---------|------|---------------------|
+| **2** | Last digit even | ✅ |
+| **3** | Sum all digits; repeat if needed; must be multiple of 3 | ✅ |
+| **4** | Last 2 digits divisible by 4 | ✅ |
+| **5** | Last digit 0 or 5 | ✅ |
+| **6** | Divisible by 2 AND 3 | ✅ |
+| **7** | Use running mod with k=1 (multiplier=3) or k=3 (multiplier=6) | ✅ |
+| **8** | Last 3 digits divisible by 8 | ✅ |
+| **9** | Sum all digits; repeat; must be multiple of 9 | ✅ |
+| **10** | Last digit 0 | ✅ |
+| **11** | Alternating sum: `d0 - d1 + d2 - d3 + ...` divisible by 11 | ✅ |
+| **13** | Alternating sum of 3-digit blocks: `abc - def + ghi - ...` divisible by 13 | ✅ |
+| **37** | Sum of 3-digit blocks: `abc + def + ghi + ...` divisible by 37 | ✅ |
+
+---
+
+## 🪄 The Osculation Method (For Primes)
+
+For a prime `p`, find its **osculator** to reduce the number digit by digit.
+
+### Positive Osculator
+
+If `p` ends in 9: `osculator = (p + 1) / 10`  
+If `p` ends in 3: `osculator = (3p + 1) / 10`  
+If `p` ends in 7: `osculator = (7p + 5) / 10`  
+If `p` ends in 1: `osculator = (9p + 1) / 10`
+
+### The Process
+
+
+
+### Example: Is 235672 divisible by 13?
+
+Osculator for 13 = 4 (since 13 ends in 3: (3×13+1)/10 = 40/10 = 4)
+
+
+
+
+
+### Negative Osculator (Alternative)
+
+For `p` ending in 1: `neg_osculator = (p - 1) / 10`  
+For `p` ending in 3: `neg_osculator = (3p - 1) / 10`  
+For `p` ending in 7: `neg_osculator = (7p - 2) / 10`  
+For `p` ending in 9: `neg_osculator = (9p - 1) / 10`
+
+**Process:** Multiply last digit by negative osculator and **subtract** from truncated number.
+
+---
+
+## 🔢 Composite Divisors
+
+If your divisor is composite, factor it into prime powers and check each independently.
+
+### Example: Divisibility by 36
+
+
+
+### Example: Divisibility by 72
+
+
+
+---
+
+## 🧩 Block Reduction Techniques
+
+### For 7, 11, 13 (since 7×11×13 = 1001)
+
+Split number into 3-digit blocks from right. Alternately add and subtract blocks:
+
+
+
+**Example: 1,234,567 divisible by 7?**
+
+
+
+---
+
+## 📋 Decision Flowchart
+
+
+
+---
+
+## 💡 Pro Tips for Mental Calculation
+
+1. **Keep remainders small**: After each step, reduce modulo `n` immediately. Never let numbers grow beyond `n × multiplier + 999`.
+
+2. **Use negative remainders**: For example, `45 mod 17 = 11`, but thinking of it as `45 - 51 = -6` (≡ 11 mod 17) can make mental math easier in some cases.
+
+3. **Precompute subtraction shortcuts**: Know that `a mod n` can be found by subtracting the nearest multiple of `n`.
+
+4. **For very long numbers**: If the number has a repeating pattern, you may not need to process every digit — use the fact that `aaaa...` repeated `m` times has properties based on repunit divisibility.
+
+5. **Practice with smaller numbers first**: Master the technique for 2-3 digit divisors with numbers under 20 digits before scaling up.
+
+---
+
+## 📐 Summary Table: Multiplier for Common Divisors
+
+| n | k=1 (×10 mod n) | k=2 (×100 mod n) | k=3 (×1000 mod n) |
+|---|-----------------|-------------------|---------------------|
+| 7 | 3 | 2 | 6 |
+| 11 | 10 | 1 | 10 |
+| 13 | 10 | 9 | 12 |
+| 17 | 10 | 15 | 14 |
+| 19 | 10 | 5 | 12 |
+| 23 | 10 | 8 | 11 |
+| 29 | 10 | 13 | 14 |
+| 31 | 10 | 7 | 8 |
+| 37 | 10 | 26 | 1 |
+| 41 | 10 | 18 | 16 |
+| 43 | 10 | 14 | 11 |
+| 47 | 10 | 6 | 13 |
+
+---
+
+## 🧪 Test Yourself
+
+Try these mentally:
+
+1. **Is 111111111111111111 divisible by 7?** (18 ones)
+2. **Is 12345654321 divisible by 37?**
+3. **Is 10^100 + 2 divisible by 3?**
+
+---
+
+*For numbers with millions of digits, the same algorithm scales — you simply loop the process more times. The mental state required is patience, not computational power.*
+
