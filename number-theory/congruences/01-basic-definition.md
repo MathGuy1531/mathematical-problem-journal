@@ -354,3 +354,455 @@ Try these mentally:
 
 *For numbers with millions of digits, the same algorithm scales — you simply loop the process more times. The mental state required is patience, not computational power.*
 
+
+
+# Linear Congruences, Chinese Remainder Theorem, and Systems of Linear Congruences
+
+A comprehensive reference with definitions, formulas, examples, and step-by-step solutions.
+
+---
+
+## Table of Contents
+1. [Linear Congruence](#linear-congruence)
+2. [System of Linear Congruences](#system-of-linear-congruences)
+3. [Chinese Remainder Theorem (CRT)](#chinese-remainder-theorem-crt)
+4. [System of Linear Congruences with Non-Coprime Moduli](#system-of-linear-congruences-with-non-coprime-moduli)
+
+---
+
+## Linear Congruence
+
+### Definition
+
+A **linear congruence** is an equation of the form:
+
+\[
+ax \equiv b \pmod{m}
+\]
+
+where:
+- \( a, b \) are integers
+- \( m \) is a positive integer (the modulus)
+- \( x \) is an unknown integer
+- We seek all integers \( x \) that satisfy the congruence
+
+### Number of Solutions
+
+Let \( d = \gcd(a, m) \).
+
+| Condition | Number of Solutions |
+|-----------|---------------------|
+| \( d \nmid b \) | No solution |
+| \( d \mid b \) | Exactly \( d \) solutions modulo \( m \) |
+
+When \( d = 1 \) (i.e., \( a \) and \( m \) are coprime), the congruence has a **unique solution** modulo \( m \).
+
+### Solution Method
+
+**Step 1:** Find \( d = \gcd(a, m) \).
+
+**Step 2:** If \( d \mid b \), divide the entire congruence by \( d \):
+
+\[
+\frac{a}{d} x \equiv \frac{b}{d} \pmod{\frac{m}{d}}
+\]
+
+**Step 3:** Find the modular inverse of \( \frac{a}{d} \) modulo \( \frac{m}{d} \).
+
+The modular inverse \( a^{-1} \bmod m \) satisfies:
+\[
+a \cdot a^{-1} \equiv 1 \pmod{m}
+\]
+
+**Step 4:** Multiply both sides by the inverse:
+
+\[
+x \equiv \left(\frac{a}{d}\right)^{-1} \cdot \frac{b}{d} \pmod{\frac{m}{d}}
+\]
+
+**Step 5:** All solutions modulo \( m \) are:
+
+\[
+x \equiv x_0 + k\left(\frac{m}{d}\right) \pmod{m}, \quad k = 0, 1, 2, \dots, d-1
+\]
+
+where \( x_0 \) is the solution modulo \( \frac{m}{d} \).
+
+### Finding Modular Inverse
+
+**Extended Euclidean Algorithm** finds \( u, v \) such that:
+
+\[
+a u + m v = \gcd(a, m)
+\]
+
+If \( \gcd(a, m) = 1 \), then \( u \equiv a^{-1} \pmod{m} \).
+
+---
+
+### Examples
+
+#### Example 1: Unique Solution
+
+Solve:
+\[
+5x \equiv 3 \pmod{7}
+\]
+
+**Solution:**
+1. \( \gcd(5, 7) = 1 \) → unique solution exists
+2. Find \( 5^{-1} \bmod 7 \):
+   - \( 5 \times 3 = 15 \equiv 1 \pmod{7} \)
+   - So \( 5^{-1} \equiv 3 \pmod{7} \)
+3. Multiply: \( x \equiv 3 \times 3 \equiv 9 \equiv 2 \pmod{7} \)
+4. **Answer:** \( x \equiv 2 \pmod{7} \)
+
+**Verification:** \( 5(2) = 10 \equiv 3 \pmod{7} \) ✓
+
+---
+
+#### Example 2: Multiple Solutions
+
+Solve:
+\[
+6x \equiv 9 \pmod{15}
+\]
+
+**Solution:**
+1. \( d = \gcd(6, 15) = 3 \)
+2. Check: \( 3 \mid 9 \) ✓ → \( 3 \) solutions modulo \( 15 \)
+3. Divide by \( 3 \): \( 2x \equiv 3 \pmod{5} \)
+4. Find \( 2^{-1} \bmod 5 \):
+   - \( 2 \times 3 = 6 \equiv 1 \pmod{5} \)
+   - So \( 2^{-1} \equiv 3 \pmod{5} \)
+5. Multiply: \( x \equiv 3 \times 3 \equiv 9 \equiv 4 \pmod{5} \)
+6. All solutions modulo \( 15 \):
+   - \( x \equiv 4, \; 4+5=9, \; 4+10=14 \pmod{15} \)
+7. **Answer:** \( x \equiv 4, 9, 14 \pmod{15} \)
+
+**Verification:**
+- \( 6(4) = 24 \equiv 9 \pmod{15} \) ✓
+- \( 6(9) = 54 \equiv 9 \pmod{15} \) ✓
+- \( 6(14) = 84 \equiv 9 \pmod{15} \) ✓
+
+---
+
+#### Example 3: No Solution
+
+Solve:
+\[
+4x \equiv 7 \pmod{10}
+\]
+
+**Solution:**
+1. \( d = \gcd(4, 10) = 2 \)
+2. Check: \( 2 \nmid 7 \) ✗
+3. **Answer:** No solution
+
+---
+
+## System of Linear Congruences
+
+### Definition
+
+A **system of linear congruences** is a set of simultaneous congruences:
+
+\[
+\begin{cases}
+x \equiv a_1 \pmod{m_1} \\
+x \equiv a_2 \pmod{m_2} \\
+\quad \vdots \\
+x \equiv a_n \pmod{m_n}
+\end{cases}
+\]
+
+We seek all integers \( x \) satisfying **all** congruences simultaneously.
+
+---
+
+## Chinese Remainder Theorem (CRT)
+
+### Statement
+
+Let \( m_1, m_2, \dots, m_n \) be **pairwise coprime** positive integers (i.e., \( \gcd(m_i, m_j) = 1 \) for all \( i \neq j \)).
+
+Then for any integers \( a_1, a_2, \dots, a_n \), the system:
+
+\[
+\begin{cases}
+x \equiv a_1 \pmod{m_1} \\
+x \equiv a_2 \pmod{m_2} \\
+\quad \vdots \\
+x \equiv a_n \pmod{m_n}
+\end{cases}
+\]
+
+has a **unique solution** modulo \( M = m_1 m_2 \cdots m_n \).
+
+### Formula (Constructive Proof)
+
+Let \( M = m_1 m_2 \cdots m_n \).
+
+For each \( i \), define:
+\[
+M_i = \frac{M}{m_i}
+\]
+
+Find the modular inverse \( y_i \) such that:
+\[
+M_i \, y_i \equiv 1 \pmod{m_i}
+\]
+
+Then the unique solution modulo \( M \) is:
+\[
+\boxed{x \equiv \sum_{i=1}^{n} a_i \, M_i \, y_i \pmod{M}}
+\]
+
+### Algorithm
+
+
+
+
+---
+
+### CRT Examples
+
+#### Example 1: Classic CRT
+
+Solve:
+\[
+\begin{cases}
+x \equiv 2 \pmod{3} \\
+x \equiv 3 \pmod{5} \\
+x \equiv 2 \pmod{7}
+\end{cases}
+\]
+
+**Solution:**
+
+1. **Check moduli are coprime:**
+   - \( \gcd(3, 5) = 1 \), \( \gcd(3, 7) = 1 \), \( \gcd(5, 7) = 1 \) ✓
+
+2. **Compute:**
+   - \( M = 3 \times 5 \times 7 = 105 \)
+   - \( M_1 = 105/3 = 35 \)
+   - \( M_2 = 105/5 = 21 \)
+   - \( M_3 = 105/7 = 15 \)
+
+3. **Find inverses:**
+   - \( y_1 \): \( 35y_1 \equiv 1 \pmod{3} \) → \( 2y_1 \equiv 1 \pmod{3} \) → \( y_1 \equiv 2 \pmod{3} \)
+   - \( y_2 \): \( 21y_2 \equiv 1 \pmod{5} \) → \( 1y_2 \equiv 1 \pmod{5} \) → \( y_2 \equiv 1 \pmod{5} \)
+   - \( y_3 \): \( 15y_3 \equiv 1 \pmod{7} \) → \( 1y_3 \equiv 1 \pmod{7} \) → \( y_3 \equiv 1 \pmod{7} \)
+
+4. **Apply formula:**
+   \[
+   \begin{aligned}
+   x &\equiv 2 \times 35 \times 2 + 3 \times 21 \times 1 + 2 \times 15 \times 1 \pmod{105} \\
+     &\equiv 140 + 63 + 30 \pmod{105} \\
+     &\equiv 233 \pmod{105} \\
+     &\equiv 23 \pmod{105}
+   \end{aligned}
+   \]
+
+5. **Answer:** \( x \equiv 23 \pmod{105} \)
+
+**Verification:**
+- \( 23 \equiv 2 \pmod{3} \) ✓
+- \( 23 \equiv 3 \pmod{5} \) ✓
+- \( 23 \equiv 2 \pmod{7} \) ✓
+
+---
+
+#### Example 2: Simple Two-Moduli System
+
+Solve:
+\[
+\begin{cases}
+x \equiv 4 \pmod{9} \\
+x \equiv 7 \pmod{11}
+\end{cases}
+\]
+
+**Solution:**
+- \( M = 9 \times 11 = 99 \)
+- \( M_1 = 11, M_2 = 9 \)
+- \( y_1 \): \( 11y_1 \equiv 1 \pmod{9} \) → \( 2y_1 \equiv 1 \pmod{9} \) → \( y_1 \equiv 5 \pmod{9} \)
+- \( y_2 \): \( 9y_2 \equiv 1 \pmod{11} \) → \( 9y_2 \equiv 1 \pmod{11} \) → \( y_2 \equiv 5 \pmod{11} \)
+
+\[
+\begin{aligned}
+x &\equiv 4 \times 11 \times 5 + 7 \times 9 \times 5 \pmod{99} \\
+  &\equiv 220 + 315 \pmod{99} \\
+  &\equiv 535 \pmod{99} \\
+  &\equiv 40 \pmod{99}
+\end{aligned}
+\]
+
+**Answer:** \( x \equiv 40 \pmod{99} \)
+
+**Verification:**
+- \( 40 \equiv 4 \pmod{9} \) ✓
+- \( 40 \equiv 7 \pmod{11} \) ✓
+
+---
+
+## System of Linear Congruences with Non-Coprime Moduli
+
+### General System
+
+Consider:
+\[
+\begin{cases}
+x \equiv a_1 \pmod{m_1} \\
+x \equiv a_2 \pmod{m_2}
+\end{cases}
+\]
+
+where \( \gcd(m_1, m_2) = d \) (not necessarily 1).
+
+### Solvability Condition
+
+The system has a solution **if and only if**:
+\[
+a_1 \equiv a_2 \pmod{d}
+\]
+
+where \( d = \gcd(m_1, m_2) \).
+
+If a solution exists, it is **unique modulo** \( \operatorname{lcm}(m_1, m_2) \).
+
+### Solution Method (Generalized CRT)
+
+**Method 1: Reduce to Coprime Case**
+
+From the first congruence:
+\[
+x = a_1 + m_1 t
+\]
+
+Substitute into the second:
+\[
+a_1 + m_1 t \equiv a_2 \pmod{m_2}
+\]
+\[
+m_1 t \equiv a_2 - a_1 \pmod{m_2}
+\]
+
+This is a single linear congruence in \( t \). Solve it, then substitute back.
+
+**Method 2: Use LCM**
+
+Break each modulus into prime powers. Solve each prime power congruence separately, then combine using CRT (since different primes are coprime).
+
+---
+
+### Examples of Non-Coprime Systems
+
+#### Example 1: Consistent System
+
+Solve:
+\[
+\begin{cases}
+x \equiv 5 \pmod{6} \\
+x \equiv 9 \pmod{10}
+\end{cases}
+\]
+
+**Solution:**
+1. \( d = \gcd(6, 10) = 2 \)
+2. Check consistency: \( 5 \equiv 9 \pmod{2} \) → \( 1 \equiv 1 \pmod{2} \) ✓
+3. From first: \( x = 5 + 6t \)
+4. Substitute: \( 5 + 6t \equiv 9 \pmod{10} \)
+   - \( 6t \equiv 4 \pmod{10} \)
+   - Divide by \( \gcd(6, 10) = 2 \): \( 3t \equiv 2 \pmod{5} \)
+   - \( 3^{-1} \equiv 2 \pmod{5} \)
+   - \( t \equiv 4 \pmod{5} \)
+   - So \( t = 4 + 5k \)
+5. \( x = 5 + 6(4 + 5k) = 5 + 24 + 30k = 29 + 30k \)
+6. **Answer:** \( x \equiv 29 \pmod{30} \)
+
+**Verification:**
+- \( 29 \equiv 5 \pmod{6} \) ✓
+- \( 29 \equiv 9 \pmod{10} \) ✓
+
+---
+
+#### Example 2: Inconsistent System
+
+Solve:
+\[
+\begin{cases}
+x \equiv 3 \pmod{6} \\
+x \equiv 8 \pmod{10}
+\end{cases}
+\]
+
+**Solution:**
+1. \( d = \gcd(6, 10) = 2 \)
+2. Check consistency: \( 3 \equiv 8 \pmod{2} \) → \( 1 \equiv 0 \pmod{2} \) ✗
+3. **Answer:** No solution
+
+---
+
+## Summary Table
+
+| Concept | Condition | Solution Formula |
+|---------|-----------|------------------|
+| **Linear Congruence** \( ax \equiv b \pmod{m} \) | \( \gcd(a,m) \mid b \) | \( x \equiv a'^{-1} \cdot b' \pmod{m'} \) where \( a' = a/d, b' = b/d, m' = m/d \) |
+| **CRT (Coprime moduli)** | \( \gcd(m_i, m_j) = 1 \) | \( x \equiv \sum a_i M_i y_i \pmod{M} \) |
+| **General System** | \( a_i \equiv a_j \pmod{\gcd(m_i, m_j)} \) | Reduce to linear congruence or prime power decomposition |
+
+---
+
+## Quick Reference Formulas
+
+### Modular Inverse (Extended Euclidean Algorithm)
+
+If \( \gcd(a, m) = 1 \), there exist integers \( u, v \) such that:
+\[
+au + mv = 1
+\]
+Then:
+\[
+a^{-1} \equiv u \pmod{m}
+\]
+
+### CRT Formula (Compact)
+
+For system \( x \equiv a_i \pmod{m_i} \) with coprime moduli:
+\[
+\boxed{x \equiv \sum_{i=1}^{n} a_i \cdot \frac{M}{m_i} \cdot \left[\left(\frac{M}{m_i}\right)^{-1} \bmod m_i\right] \pmod{M}}
+\]
+where \( M = \prod_{i=1}^{n} m_i \).
+
+### Bézout's Identity
+
+For any integers \( a, b \), there exist integers \( u, v \) such that:
+\[
+au + bv = \gcd(a, b)
+\]
+
+---
+
+## Practice Problems
+
+1. Solve: \( 7x \equiv 3 \pmod{11} \)
+2. Solve: \( 12x \equiv 8 \pmod{20} \)
+3. Solve the system:
+   \[
+   \begin{cases}
+   x \equiv 1 \pmod{3} \\
+   x \equiv 4 \pmod{5} \\
+   x \equiv 6 \pmod{7}
+   \end{cases}
+   \]
+4. Solve:
+   \[
+   \begin{cases}
+   x \equiv 2 \pmod{4} \\
+   x \equiv 5 \pmod{6}
+   \end{cases}
+   \]
+
+---
+
